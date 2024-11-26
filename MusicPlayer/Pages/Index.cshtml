@@ -1,0 +1,157 @@
+﻿@page
+@model IndexModel
+@{
+    ViewData["Title"] = "Home page";
+}
+
+
+<h5>Playlists</h5>
+<card class="cardPlaylist">
+
+    <card class="cardAllSongs overflow-scroll">
+        <h5>Alla filer i audio-mappen</h5>
+        <ul id="playlist">
+            @foreach (var file in Model.AudioFilesList)
+            {
+                if (file != null)
+                {
+                    <li>
+                        <a href="#" onclick="playAudio('@file')">@file</a>
+                    </li>
+                }
+            }
+        </ul>
+
+    </card>
+    <card class="cardAllPlaylists">
+
+
+    </card>
+    <card class="cardPlaylistContent">
+
+
+    </card>
+</card>
+
+<div id="player">
+    <audio id="audioPlayer" controls>
+        <source id="audioSource" src="" type="audio/mpeg" />
+        Din webbläsare stödjer inte ljuduppspelning.
+    </audio>
+
+    <!-- Tidslinje -->
+    <input type="range" id="progressBar" value="0" max="100" style="width: 100%;" />
+
+    <!-- Volymkontroll -->
+    <label for="volumeControl">Volym:</label>
+    <input type="range" id="volumeControl" min="0" max="0.025" step="0.001" value="0.025" />
+
+    <!-- Kontrollknappar -->
+    <div>
+        <button onclick="playAudio()">Spela</button>
+        <button onclick="pauseAudio()">Pausa</button>
+        <button onclick="stopAudio()">Stoppa</button>
+        <button onclick="playNext()">Nästa</button>
+    </div>
+</div>
+
+<hr />
+<h6>Lägg in Filer i audio-mappen</h6> 
+<div>
+    <form method="post" enctype="multipart/form-data">
+        <input type="file" name="AudioFiles" accept=".mp3,.wav" multiple />
+        <button type="submit">Ladda upp filer</button>
+    </form>
+</div>
+<br/>
+<h5>Alla filer i audio-mappen</h5>
+<ul id="playlist">
+    @foreach (var file in Model.AudioFilesList)
+    {
+        if (file != null)
+        {
+            <li>
+                <a href="#" onclick="playAudio('@file')">@file</a>
+            </li>
+        }
+    }
+</ul>
+
+<script>
+
+    const audioPlayer = document.getElementById('audioPlayer');
+    // Begränsa volymen till max 50%
+    audioPlayer.volume = 0.025;
+    // Lyssna på volymförändringar och begränsa till 50%
+    audioPlayer.addEventListener('volumechange', () => {
+        if (audioPlayer.volume > 0.025) {
+            audioPlayer.volume = 0.025; // Återställ om den går över gränsen
+        }
+    });
+
+    // const audioPlayer = document.getElementById("audioPlayer");
+    const audioSource = document.getElementById("audioSource");
+    const progressBar = document.getElementById("progressBar");
+    const volumeControl = document.getElementById("volumeControl");
+
+    // Lista över alla ljudfiler
+    const playlistItems = Array.from(document.querySelectorAll("#playlist a"));
+    let currentIndex = 0;
+
+    // Spela upp en ljudfil
+    function playAudio(filePath = null) {
+        if (filePath) {
+            audioSource.src = filePath;
+            audioPlayer.load();
+            currentIndex = playlistItems.findIndex(item => item.getAttribute("onclick").includes(filePath));
+        }
+        audioPlayer.play();
+    }
+
+    // Pausa ljudet
+    function pauseAudio() {
+        audioPlayer.pause();
+    }
+
+    // Stoppa ljudet och återställ tidslinjen
+    function stopAudio() {
+        audioPlayer.pause();
+        audioPlayer.currentTime = 0;
+    }
+
+    // Spela nästa låt i spellistan
+    function playNext() {
+        currentIndex = (currentIndex + 1) % playlistItems.length;
+        const nextFile = playlistItems[currentIndex].getAttribute("onclick").match(/'([^']+)'/)[1];
+        playAudio(nextFile);
+    }
+
+    // Uppdatera tidslinjen
+    audioPlayer.addEventListener("timeupdate", () => {
+        progressBar.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
+    });
+
+    // Hoppa i låten när tidslinjen ändras
+    progressBar.addEventListener("input", () => {
+        audioPlayer.currentTime = (progressBar.value / 100) * audioPlayer.duration;
+    });
+
+    // Justera volymen
+    volumeControl.addEventListener("input", () => {
+        audioPlayer.volume = volumeControl.value;
+    });
+
+    // När låten är klar, spela nästa
+    audioPlayer.addEventListener("ended", playNext);
+</script>
+
+
+
+@if (TempData["AudioUrl"] != null)
+{
+    <h3>Uppladdad fil:</h3>
+    <audio id="uploadedAudio" controls>
+        <source src="@TempData["AudioUrl"]" type="audio/mpeg" />
+        Din webbläsare stödjer inte ljuduppspelning.
+    </audio>
+}
