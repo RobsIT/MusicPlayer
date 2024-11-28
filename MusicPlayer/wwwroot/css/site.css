@@ -28,7 +28,7 @@ body {
 
 .cardPlaylist {
     width: 900px; /* Sätter bredden */
-    height: 200px; /* Sätter höjden */
+    height: 400px; /* Sätter höjden */
     padding: 20px; /* Skapar inre marginaler */
     border: 1px solid #ccc; /* Ger en tunn ram */
     border-radius: 10px; /* Rundar hörnen */
@@ -39,8 +39,8 @@ body {
     background-color: darkgray; /* Sätter en bakgrundsfärg */
 }
 .cardAllSongs {
-    width: 200px; /* Sätter bredden */
-    height: 150px; /* Sätter höjden */
+    width: 300px; /* Sätter bredden */
+    height: 350px; /* Sätter höjden */
     padding: 20px; /* Skapar inre marginaler */
     border: 1px solid #ccc; /* Ger en tunn ram */
     border-radius: 10px; /* Rundar hörnen */
@@ -49,10 +49,11 @@ body {
     flex-direction: column; /* Staplar innehållet vertikalt */
     justify-content: space-between; /* Fördelar utrymme mellan element */
     background-color: #fff; /* Sätter en bakgrundsfärg */
+    overflow-y: auto;
 }
 .cardAllPlaylists {
-    width: 200px; /* Sätter bredden */
-    height: 150px; /* Sätter höjden */
+    width: 300px; /* Sätter bredden */
+    height: 350px; /* Sätter höjden */
     padding: 20px; /* Skapar inre marginaler */
     border: 1px solid #ccc; /* Ger en tunn ram */
     border-radius: 10px; /* Rundar hörnen */
@@ -61,10 +62,12 @@ body {
     flex-direction: column; /* Staplar innehållet vertikalt */
     justify-content: space-between; /* Fördelar utrymme mellan element */
     background-color: #fff; /* Sätter en bakgrundsfärg */
+    overflow-y: auto;
+   
 }
 .cardPlaylistContent {
-    width: 200px; /* Sätter bredden */
-    height: 150px; /* Sätter höjden */
+    width: 300px; /* Sätter bredden */
+    height: 350px; /* Sätter höjden */
     padding: 20px; /* Skapar inre marginaler */
     border: 1px solid #ccc; /* Ger en tunn ram */
     border-radius: 10px; /* Rundar hörnen */
@@ -73,4 +76,7 @@ body {
     flex-direction: column; /* Staplar innehållet vertikalt */
     justify-content: space-between; /* Fördelar utrymme mellan element */
     background-color: #fff; /* Sätter en bakgrundsfärg */
+    overflow-y: auto;
+   
+   
 }
