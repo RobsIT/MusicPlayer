@@ -32,9 +32,12 @@ namespace MusicPlayer.Pages
         public List<Playlist> PlaylistList { get; set; }
         public List<Song> AllSongsList { get; set; }
         public List<SongAddedToPlaylist> SongsAddedToPlaylistsList { get; set; }
-        
-        public void OnGet()
+        public int SongId { get; set; }
+        public int PlaylistId { get; set; }
+        public void OnGet(int songId, int playlistId)
         {
+
+            
             // Hämta alla ljudfiler från wwwroot/audio
             var audioDirectory = Path.Combine("wwwroot/audio");
             if (Directory.Exists(audioDirectory))
@@ -43,25 +46,19 @@ namespace MusicPlayer.Pages
                                           .Select(file => "/audio/" + Path.GetFileName(file))
                                           .ToList();
             }
-
-            
-            
+            PlaylistId = playlistId;
+            SongId = songId;
             AllSongsList = _context.AllSongs.ToList(); // Hämta alla poster AllSongs
             PlaylistList = _context.Playlists.ToList(); // Hämta alla poster från Playlist-tabellen
             SongsAddedToPlaylistsList = _context.SongsAddedToPlaylists.ToList(); // Hämta alla poster från SongsAddedToPlaylists-tabellen
         }
        
-        public async Task<IActionResult> OnPostAsync()
+        public async Task<IActionResult> OnPostAsync(int songId, int playlistId)
         {
-            //if (AudioFiles != null && AudioFiles.Any())
-            //{
-            //    foreach (var audioFile in AudioFiles)
-            //    {
+            int songId02 = songId;
+            int playlistId02 = playlistId;
 
-            //        var filePath = Path.Combine("wwwroot/audio", audioFile.FileName);
-                
-            //    }
-            //}
+
             string audiofileName = AudioFileName;
             Song audioFileNameObj = new Song();
             audioFileNameObj.SongFileName = audiofileName;
@@ -70,10 +67,24 @@ namespace MusicPlayer.Pages
             {
                 _context.AllSongs.Add(audioFileNameObj); // Lägger till i DbSet
             }
+            
             if (PlaylistObj.PlaylistName != null) 
             {
                 _context.Playlists.Add(PlaylistObj); // Lägger till i DbSet
             }
+            
+          
+            if((songId != null || playlistId != null) || (songId != 0 || playlistId != 0)) 
+            {
+                SongAddedToPlaylist addedToPlaylist = new SongAddedToPlaylist();
+                addedToPlaylist.SongFileId = songId;
+                addedToPlaylist.PlaylistId = playlistId;
+                
+                _context.SongsAddedToPlaylists.Add(addedToPlaylist); // Lägger till i DbSet
+            }
+
+            
+            
             await _context.SaveChangesAsync();   // Sparar ändringarna i databasen
 
 

@@ -6,32 +6,15 @@
     
 }
 
-<h5>Alla filer i audio-mappen</h5>
-<ul id="playlist">
-    @foreach (var file in Model.AudioFilesList)
-    {
-        if (file != null)
-        {
-            <li>
-                <a href="#" onclick="playAudio('@file')">@System.IO.Path.GetFileName(file)</a>
-            </li>
-        }
-    }
-</ul>
-<hr/>
+
 <h6>Lägg till i Bibliotek</h6>
 <div>
-   @*  <form method="post">
-        <label asp-for="PlaylistObj.PlaylistName">Ange Playlist namn</label>
-        <input asp-for="PlaylistObj.PlaylistName" />
-        <input type="submit" class="btn-dark" value="Skapa" />
-    </form> *@
     <form method="post" >
         <input type="file" name="AudioFileName" />
         <button type="submit">Ladda upp låt</button>
     </form>
-
 </div>
+
 <hr/>
 <h6>Skapa ny playlist</h6>
 <div>
@@ -42,55 +25,64 @@
     </form>
 </div>
 
+
+
 <br />
-<h5>Playlists</h5>
+
 <card class="cardPlaylist">
 
     <card class="cardAllSongs">
         <h6>Alla låtar i Bibliotek</h6>
-        <ul>
-            @foreach (var song in Model.AllSongsList)
+        @foreach (var song in Model.AllSongsList)
+        {
+            if (song != null)
             {
-                if (song != null)
-                {
-                    string audioPath = "/audio/" + song.SongFileName;
-                    <li>
-                        <a href="#" onclick="playAudio('@audioPath')">@System.IO.Path.GetFileName(song.SongFileName)</a>
-                    </li>
-                }
-            }
-        </ul>
+                string audioPath = "/audio/" + song.SongFileName;
+                <span>
 
+                    <a asp-route-songId="@song.Id" class="btn-sm btn-dark" >+</a>
+                    <a href="#" onclick="playAudio('@audioPath')">@System.IO.Path.GetFileName(song.SongFileName)</a>
+                </span>
+            }
+                
+        }
     </card>
+    
     <card class="cardAllPlaylists">
         <h6>Playlists</h6>
-        
         @foreach (var playlistItem in Model.PlaylistList)
         {
             if (playlistItem != null)
             {
-
-                <a href="#" onclick="">@playlistItem.PlaylistName</a>
-                   
+                int playlistId = playlistItem.Id;
+                <span>
+                    <form method="post">
+                        <a asp-route-playlistId="@playlistItem.Id" asp-route-songId="@Model.SongId" class="btn-sm btn-dark">+</a>
+                        <input type="submit" class="btn-dark" value="submit" />
+                    </form>
+                    <a asp-route-playlistId="@playlistItem.Id"  >@playlistItem.PlaylistName</a>
+                </span>
+            
             }
         }
-       
-
     </card>
+   
     <card class="cardPlaylistContent">
         <h6>Inne I Playlisten</h6>
-       
         @foreach (var songInPlaylist in Model.SongsAddedToPlaylistsList)
         {
             if (songInPlaylist != null)
             {
-
-                <a href="#" onclick="">@songInPlaylist.Id</a>
-                   
+                var songName = Model.AllSongsList.Where(s => s.Id == songInPlaylist.SongFileId).FirstOrDefault();
+                var playlistName = Model.PlaylistList.Where(s => s.Id == songInPlaylist.PlaylistId).FirstOrDefault();
+                
+                if(Model.PlaylistId == songInPlaylist.PlaylistId)
+                {
+                    string audioPath = "/audio/" + songName.SongFileName;
+                    <a href="#" onclick="playAudio('@audioPath')">@songName.SongFileName</a>
+                }
             }
         }
-       
-
     </card>
 </card>
 
@@ -146,22 +138,7 @@
             currentIndex = playlistItems.findIndex(item => item.getAttribute("onclick").includes(filePath));
         }
         audioPlayer.play();
-    }
-    
-    
-    // Spela upp en ljudfil---KOPIA---------------------------------------------------------------------
-    // function playAudio02(filePath = null) {
-        
-        
-    //     if (filePath) {
-    //         audioSource.src = filePath;
-    //         audioPlayer.load();
-    //         currentIndex = playlistItems.findIndex(item => item.getAttribute("onclick").includes(filePath));
-    //     }
-    //     audioPlayer.play();
-    // }
-    //-------------------------------------------------------------------------------------------------------
-
+    }   
 
     // Pausa ljudet
     function pauseAudio() {

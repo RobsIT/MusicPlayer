@@ -3,7 +3,7 @@
     public class SongAddedToPlaylist
     {
         public int Id { get; set; }
-        public string SongFileId { get; set; }
-        public string PlaylistId { get; set;}
+        public int SongFileId { get; set; }
+        public int PlaylistId { get; set;}
     }
 }
