@@ -55,9 +55,6 @@ namespace MusicPlayer.Pages
        
         public async Task<IActionResult> OnPostAsync(int songId, int playlistId)
         {
-            int songId02 = songId;
-            int playlistId02 = playlistId;
-
 
             string audiofileName = AudioFileName;
             Song audioFileNameObj = new Song();
