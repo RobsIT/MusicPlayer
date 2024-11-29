@@ -19,64 +19,52 @@ html {
 
 body {
     margin-bottom: 60px;
-    background-color: lightblue
+    background-color: black;
 }
 
 .rcorners1 {
     border-radius: 25px;
 }
 
-.cardPlaylist {
+.cardMusicPlayer {
     width: 900px; /* Sätter bredden */
-    height: 400px; /* Sätter höjden */
+    height: 620px; /* Sätter höjden */
     padding: 20px; /* Skapar inre marginaler */
-    border: 1px solid #ccc; /* Ger en tunn ram */
     border-radius: 10px; /* Rundar hörnen */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Lägger till skugga */
-    display: flex; /* Gör kortet flexibelt */
-   /* flex-direction: column;*/ /* Staplar innehållet vertikalt */
-    justify-content: space-between; /* Fördelar utrymme mellan element */
-    background-color: darkgray; /* Sätter en bakgrundsfärg */
+    display: block; /* Gör kortet flexibelt */
+    /*flex-direction: column;*/ /* Staplar innehållet vertikalt */
+    background-image: url("../images/MusicPlayerImage.png");
+    background-size: cover;
 }
-.cardAllSongs {
-    width: 300px; /* Sätter bredden */
-    height: 350px; /* Sätter höjden */
-    padding: 20px; /* Skapar inre marginaler */
-    border: 1px solid #ccc; /* Ger en tunn ram */
-    border-radius: 10px; /* Rundar hörnen */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Lägger till skugga */
-    display: flex; /* Gör kortet flexibelt */
-    flex-direction: column; /* Staplar innehållet vertikalt */
-    justify-content: space-between; /* Fördelar utrymme mellan element */
-    background-color: #fff; /* Sätter en bakgrundsfärg */
+.cardLibrary {
+    width: 400px;
+    height: 350px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(0,0,0,90%);
     overflow-y: auto;
-}
-.cardAllPlaylists {
-    width: 300px; /* Sätter bredden */
-    height: 350px; /* Sätter höjden */
-    padding: 20px; /* Skapar inre marginaler */
-    border: 1px solid #ccc; /* Ger en tunn ram */
-    border-radius: 10px; /* Rundar hörnen */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Lägger till skugga */
-    display: flex; /* Gör kortet flexibelt */
-    flex-direction: column; /* Staplar innehållet vertikalt */
-    justify-content: space-between; /* Fördelar utrymme mellan element */
-    background-color: #fff; /* Sätter en bakgrundsfärg */
-    overflow-y: auto;
-   
 }
 .cardPlaylistContent {
-    width: 300px; /* Sätter bredden */
-    height: 350px; /* Sätter höjden */
-    padding: 20px; /* Skapar inre marginaler */
-    border: 1px solid #ccc; /* Ger en tunn ram */
-    border-radius: 10px; /* Rundar hörnen */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Lägger till skugga */
-    display: flex; /* Gör kortet flexibelt */
-    flex-direction: column; /* Staplar innehållet vertikalt */
-    justify-content: space-between; /* Fördelar utrymme mellan element */
-    background-color: #fff; /* Sätter en bakgrundsfärg */
+    width: 500px;
+    height: 350px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    background-color: rgba(0,0,0,80%);
     overflow-y: auto;
-   
-   
+}
+
+.cardControlls {
+    width: 860px;
+    height: 200px;
+    background-color: rgba(0,0,0,80%);
+    display: block;
+    border-radius: 10px;
+    padding: 20px;
+    padding-top: 10px;
 }
