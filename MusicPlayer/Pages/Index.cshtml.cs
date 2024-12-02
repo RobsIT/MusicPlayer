@@ -11,10 +11,14 @@ using MusicPlayer.Data;
 
 namespace MusicPlayer.Pages
 {
+    [IgnoreAntiforgeryToken]
     public class IndexModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-
+        public class SongClickRequest
+        {
+            public int SongId { get; set; }
+        }
         public IndexModel(ApplicationDbContext context)
         {
             _context = context;
@@ -37,8 +41,6 @@ namespace MusicPlayer.Pages
         public void OnGet(int songId, int playlistId)
         {
 
-            
-            // Hämta alla ljudfiler från wwwroot/audio
             var audioDirectory = Path.Combine("wwwroot/audio");
             if (Directory.Exists(audioDirectory))
             {
@@ -48,70 +50,64 @@ namespace MusicPlayer.Pages
             }
             PlaylistId = playlistId;
             SongId = songId;
-            AllSongsList = _context.AllSongs.ToList(); // Hämta alla poster AllSongs
-            PlaylistList = _context.Playlists.ToList(); // Hämta alla poster från Playlist-tabellen
-            SongsAddedToPlaylistsList = _context.SongsAddedToPlaylists.ToList(); // Hämta alla poster från SongsAddedToPlaylists-tabellen
+            AllSongsList = _context.AllSongs.ToList();
+            PlaylistList = _context.Playlists.ToList();
+            SongsAddedToPlaylistsList = _context.SongsAddedToPlaylists.ToList();
         }
-       
+
         public async Task<IActionResult> OnPostAsync(int songId, int playlistId)
         {
 
             string audiofileName = AudioFileName;
             Song audioFileNameObj = new Song();
             audioFileNameObj.SongFileName = audiofileName;
-            
-            if(audioFileNameObj.SongFileName != null) 
+
+            if (audioFileNameObj.SongFileName != null)
             {
                 _context.AllSongs.Add(audioFileNameObj); // Lägger till i DbSet
             }
-            
-            if (PlaylistObj.PlaylistName != null) 
+
+            if (PlaylistObj.PlaylistName != null)
             {
                 _context.Playlists.Add(PlaylistObj); // Lägger till i DbSet
             }
-            
-          
-            if((songId != null || playlistId != null) || (songId != 0 || playlistId != 0)) 
+
+
+            if ((songId != null || playlistId != null) || (songId != 0 || playlistId != 0))
             {
                 SongAddedToPlaylist addedToPlaylist = new SongAddedToPlaylist();
                 addedToPlaylist.SongFileId = songId;
                 addedToPlaylist.PlaylistId = playlistId;
-                
+
                 _context.SongsAddedToPlaylists.Add(addedToPlaylist); // Lägger till i DbSet
             }
 
-            
-            
+
+
             await _context.SaveChangesAsync();   // Sparar ändringarna i databasen
 
 
             return RedirectToPage();
         }
+
+        public async Task<IActionResult> OnPostUpdateSongClicksAsync([FromBody] SongClickRequest request)
+        {
+            Console.WriteLine($"Received songId: {request.SongId}"); // Debug log
+            if (request.SongId <= 0)
+            {
+                return new JsonResult(new { success = false, message = "Invalid song ID (must be greater than 0)" });
+            }
+
+            var songEconomy = await _context.SongsEconomies.FirstOrDefaultAsync(s => s.SongId == request.SongId);
+            if (songEconomy == null)
+            {
+                return new JsonResult(new { success = false, message = $"No SongEconomy found for SongId {request.SongId}" });
+            }
+
+            songEconomy.SongClicks += 1;
+            await _context.SaveChangesAsync();
+
+            return new JsonResult(new { success = true });
+        }
     }
 }
-
-//public async Task<IActionResult> OnPostAsync()
-//{
-//    if (AudioFiles != null && AudioFiles.Any())
-//    {
-//        foreach (var audioFile in AudioFiles)
-//        {
-//            var filePath = Path.Combine("wwwroot/audio", audioFile.FileName);
-
-//            // Kontrollera om filen redan finns för att undvika duplicering
-//            if (!System.IO.File.Exists(filePath))
-//            {
-//                using (var stream = new FileStream(filePath, FileMode.Create))
-//                {
-//                    await audioFile.CopyToAsync(stream);
-//                }
-//            }
-//        }
-//    }
-
-//    _context.Playlists.Add(PlaylistObj); // Lägger till i DbSet
-//    await _context.SaveChangesAsync();   // Sparar ändringarna i databasen
-
-
-//    return RedirectToPage();
-//}

@@ -65,7 +65,7 @@
         </card>
    
         <card class="cardPlaylistContent">
-            @if(Model.PlaylistId > 0)
+            @if (Model.PlaylistId > 0)
             {
                 <h6 style="color: white">Playlist</h6>
                 @foreach (var songInPlaylist in Model.SongsAddedToPlaylistsList)
@@ -78,12 +78,14 @@
                         if (Model.PlaylistId == songInPlaylist.PlaylistId)
                         {
                             string audioPath = "/audio/" + songName.SongFileName;
-                            <a href="#" onclick="playAudio('@audioPath')">@songName.SongFileName</a>
+                            <a href="#" onclick="playAudio('@audioPath', @songInPlaylist.SongFileId)" data-song-id="@songInPlaylist.SongFileId">
+                                @songName.SongFileName
+                            </a>
                         }
-
                     }
                 }
             }
+
             else 
             {
                 <h6 style="color: white">Alla låtar</h6>
@@ -93,8 +95,7 @@
                     {
                         string audioPath = "/audio/" + song.SongFileName;
                         <div class="d-flex justify-content-between">
-
-                            <a href="#" onclick="playAudio('@audioPath')">@System.IO.Path.GetFileName(song.SongFileName)</a>
+                            <a href="#" onclick="playAudio('@audioPath', @song.Id)" data-song-id="@song.Id">@System.IO.Path.GetFileName(song.SongFileName)</a>
                             <a asp-route-songId="@song.Id" class="btn-sm btn-dark">+</a>
                         </div>
                     }
@@ -122,7 +123,6 @@
 
             <!-- Kontrollknappar -->
             <div>
-                <button onclick="playAudio()">Spela</button>
                 <button onclick="pauseAudio()">Pausa</button>
                 <button onclick="stopAudio()">Stoppa</button>
                 <button onclick="playNext()">Nästa</button>
@@ -132,105 +132,4 @@
 
 </card>
 
-<script>
-
-    const audioPlayer = document.getElementById('audioPlayer');
-    // Begränsa volymen till max 50%
-    audioPlayer.volume = 0.025;
-    // Lyssna på volymförändringar och begränsa till 50%
-    audioPlayer.addEventListener('volumechange', () => {
-        if (audioPlayer.volume > 0.025) {
-            audioPlayer.volume = 0.025; // Återställ om den går över gränsen
-        }
-    });
-
-    // const audioPlayer = document.getElementById("audioPlayer");
-    const audioSource = document.getElementById("audioSource");
-    const progressBar = document.getElementById("progressBar");
-    const volumeControl = document.getElementById("volumeControl");
-
-    // Lista över alla ljudfiler
-    const playlistItems = Array.from(document.querySelectorAll("#playlist a"));
-    let currentIndex = 0;
-
-    // Spela upp en ljudfil
-    function playAudio(filePath = null) {
-        
-        if (filePath) {
-            audioSource.src = filePath;
-            audioPlayer.load();
-            currentIndex = playlistItems.findIndex(item => item.getAttribute("onclick").includes(filePath));
-        }
-        audioPlayer.play();
-    }   
-
-    // Pausa ljudet
-    function pauseAudio() {
-        audioPlayer.pause();
-    }
-
-    // Stoppa ljudet och återställ tidslinjen
-    function stopAudio() {
-        audioPlayer.pause();
-        audioPlayer.currentTime = 0;
-    }
-
-    // Spela nästa låt i spellistan
-    function playNext() {
-        currentIndex = (currentIndex + 1) % playlistItems.length;
-        const nextFile = playlistItems[currentIndex].getAttribute("onclick").match(/'([^']+)'/)[1];
-        playAudio(nextFile);
-    }
-
-    // Uppdatera tidslinjen
-    audioPlayer.addEventListener("timeupdate", () => {
-        progressBar.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
-    });
-
-    // Hoppa i låten när tidslinjen ändras
-    progressBar.addEventListener("input", () => {
-        audioPlayer.currentTime = (progressBar.value / 100) * audioPlayer.duration;
-    });
-
-    // Justera volymen
-    volumeControl.addEventListener("input", () => {
-        audioPlayer.volume = volumeControl.value;
-    });
-
-    // När låten är klar, spela nästa
-    audioPlayer.addEventListener("ended", playNext);
-</script>
-
-
-
-@* @if (TempData["AudioUrl"] != null)
-{
-    <h3>Uppladdad fil:</h3>
-    <audio id="uploadedAudio" controls>
-        <source src="@TempData["AudioUrl"]" type="audio/mpeg" />
-        Din webbläsare stödjer inte ljuduppspelning.
-    </audio>
-} *@
-
-@* <hr />
-<h6>Lägg in Filer i audio-mappen</h6> 
-<div>
-    <form method="post" enctype="multipart/form-data">
-        <input type="file" name="AudioFiles" accept=".mp3,.wav" multiple />
-        <button type="submit">Ladda upp filer</button>
-    </form>
-</div>
-<br/>
-<h5>Alla filer i audio-mappen</h5>
-<ul id="playlist">
-    @foreach (var file in Model.AudioFilesList)
-    {
-        if (file != null)
-        {
-            <li>
-                <a href="#" onclick="playAudio('@file')">@System.IO.Path.GetFileName(file)</a>
-            </li>
-        }
-    }
-</ul>
- *@
+<script src="~/js/AudioPlayer.js"></script>

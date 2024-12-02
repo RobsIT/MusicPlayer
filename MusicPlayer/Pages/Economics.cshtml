@@ -5,35 +5,23 @@
 
 <H6 style="color: white">Ekonomi</H6>
 
-@foreach(var song in Model.AllSongsList)
+@foreach (var song in Model.AllSongsList)
 {
     var songEconomy = Model.SongsEconomiesList.Where(se => se.SongId == song.Id).FirstOrDefault();
-    <div class="flex" style="color: white">
-
-        <form method="post">
-            <button type="submit" asp-route-songId="@song.Id" >@song.SongFileName</button>
-
-        </form>
-
-      
-        @if (songEconomy != null){<p>Antal clicks: @songEconomy.SongClicks</p>}
-        else{<p>Inget</p>}
-        @if (songEconomy != null){<p>Pris per click: @songEconomy.SongPlayPrice</p>}
-        else{<p>Inget</p>}
-        @if (songEconomy != null){<p>Intjänade pengar: @songEconomy.SongMoneyMade</p>}
-        else{<p>Inget</p>}
-
+    <div class="card mb-3" style="background-color: rgba(140, 140, 140, 70%); color: white;">
+        <div class="card-body">
+            @if (songEconomy != null)
+            {
+                <h4 class="card-title">@song.SongFileName.Split('.')[0]</h4>
+                <p class="card-text">Antal clicks: @songEconomy.SongClicks</p>
+                <p class="card-text">Pris per click: @songEconomy.SongPlayPrice</p>
+                <p class="card-text">Intjänade pengar: @(songEconomy.SongClicks * songEconomy.SongPlayPrice)</p>
+            }
+            else
+            {
+                <h4 class="card-title">@song.SongFileName.Split('.')[0]</h4>
+                <p class="card-text">Inget</p>
+            }
+        </div>
     </div>
 }
-
-
-@* <button method="post" value="1">låt 1</button>
-<button method="post" value="2">låt 2</button>
-<button method="post" value="3">låt 3</button>
-<button method="post" value="4">låt 4</button>
-<button method="post" value="5">låt 5</button>
-<button method="post" value="6">låt 6</button>
-<button method="post" value="7">låt 7</button>
-<button method="post" value="8">låt 8</button>
-<button method="post" value="9">låt 9</button>
-<button method="post" value="10">låt 10</button> *@

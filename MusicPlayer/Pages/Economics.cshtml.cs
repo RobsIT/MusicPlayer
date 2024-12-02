@@ -36,7 +36,6 @@ namespace MusicPlayer.Pages
             songEconomy.SongId = songId;
             songEconomy.SongClicks = 0;
             songEconomy.SongPlayPrice = 0.5;
-            songEconomy.SongMoneyMade = 0;
 
             _context.SongsEconomies.Add(songEconomy);
 
