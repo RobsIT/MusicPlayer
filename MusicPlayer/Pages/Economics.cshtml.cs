@@ -19,7 +19,6 @@ namespace MusicPlayer.Pages
             _context = context;
         }
 
-        //public int SongId { get; set; }
         public List<Song> AllSongsList { get; set; }
         public List<SongEconomy> SongsEconomiesList { get; set; }
 

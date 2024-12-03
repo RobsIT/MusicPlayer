@@ -7,12 +7,15 @@
 
 @foreach (var song in Model.AllSongsList)
 {
+    <form method="post">
+        <button type="submit" asp-route-songId="@song.Id">Lägg till</button>
+    </form>
     var songEconomy = Model.SongsEconomiesList.Where(se => se.SongId == song.Id).FirstOrDefault();
     <div class="card mb-3" style="background-color: rgba(140, 140, 140, 70%); color: white;">
         <div class="card-body">
             @if (songEconomy != null)
             {
-                <h4 class="card-title">@song.SongFileName.Split('.')[0]</h4>
+                <h4 class="card-title">@song.SongFileName.Split('.')[0]</h4>//Split hides .mp3 in the file name
                 <p class="card-text">Antal clicks: @songEconomy.SongClicks</p>
                 <p class="card-text">Pris per click: @songEconomy.SongPlayPrice</p>
                 <p class="card-text">Intjänade pengar: @(songEconomy.SongClicks * songEconomy.SongPlayPrice)</p>

@@ -6,6 +6,7 @@
     
 }
 
+
 <card class="cardMusicPlayer" >
 
     <div style="display: flex;">
@@ -91,11 +92,20 @@
                 <h6 style="color: white">Alla låtar</h6>
                 @foreach (var song in Model.AllSongsList)
                 {
+                    var songEconomy = Model.SongsEconomiesList.Where(se => se.SongId == song.Id).FirstOrDefault();
+                    int songClicksFromDb = 0; 
+                    
+                    if(songEconomy != null)
+                    {
+                        songClicksFromDb = songEconomy.SongClicks;
+                    }
+                    
                     if (song != null)
                     {
                         string audioPath = "/audio/" + song.SongFileName;
                         <div class="d-flex justify-content-between">
                             <a href="#" onclick="playAudio('@audioPath', @song.Id)" data-song-id="@song.Id">@System.IO.Path.GetFileName(song.SongFileName)</a>
+                            <div style="color: gray">@songClicksFromDb</div>
                             <a asp-route-songId="@song.Id" class="btn-sm btn-dark">+</a>
                         </div>
                     }
@@ -133,3 +143,4 @@
 </card>
 
 <script src="~/js/AudioPlayer.js"></script>
+

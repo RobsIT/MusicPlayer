@@ -38,6 +38,7 @@ namespace MusicPlayer.Pages
         public List<SongAddedToPlaylist> SongsAddedToPlaylistsList { get; set; }
         public int SongId { get; set; }
         public int PlaylistId { get; set; }
+        public List<SongEconomy> SongsEconomiesList { get; set; }
         public void OnGet(int songId, int playlistId)
         {
 
@@ -48,6 +49,8 @@ namespace MusicPlayer.Pages
                                           .Select(file => "/audio/" + Path.GetFileName(file))
                                           .ToList();
             }
+
+            SongsEconomiesList = _context.SongsEconomies.ToList();
             PlaylistId = playlistId;
             SongId = songId;
             AllSongsList = _context.AllSongs.ToList();
@@ -72,7 +75,6 @@ namespace MusicPlayer.Pages
                 _context.Playlists.Add(PlaylistObj); // Lägger till i DbSet
             }
 
-
             if ((songId != null || playlistId != null) || (songId != 0 || playlistId != 0))
             {
                 SongAddedToPlaylist addedToPlaylist = new SongAddedToPlaylist();
@@ -82,10 +84,7 @@ namespace MusicPlayer.Pages
                 _context.SongsAddedToPlaylists.Add(addedToPlaylist); // Lägger till i DbSet
             }
 
-
-
             await _context.SaveChangesAsync();   // Sparar ändringarna i databasen
-
 
             return RedirectToPage();
         }
@@ -105,6 +104,7 @@ namespace MusicPlayer.Pages
             }
 
             songEconomy.SongClicks += 1;
+            
             await _context.SaveChangesAsync();
 
             return new JsonResult(new { success = true });
