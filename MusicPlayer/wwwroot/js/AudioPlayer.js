@@ -42,18 +42,6 @@ const playAudio = (filePath = null, songId = null) => {
             headers: { 'Content-Type': 'application/json' },
             body: JSON.stringify({ songId: songId })
         })
-
-        .then(response => response.json())
-        .then(data => {
-            if (!data.success)
-            {
-                console.error('Failed to update song clicks:', data.message);
-            }
-            else
-            {
-                console.log('Song clicks updated successfully!');
-            }
-        });
     }
 };
 

@@ -41,15 +41,7 @@ namespace MusicPlayer.Pages
         public List<SongEconomy> SongsEconomiesList { get; set; }
         public void OnGet(int songId, int playlistId)
         {
-
-            var audioDirectory = Path.Combine("wwwroot/audio");
-            if (Directory.Exists(audioDirectory))
-            {
-                AudioFilesList = Directory.GetFiles(audioDirectory)
-                                          .Select(file => "/audio/" + Path.GetFileName(file))
-                                          .ToList();
-            }
-
+            AudioFilesList = GetAudioFiles("wwwroot/audio");
             SongsEconomiesList = _context.SongsEconomies.ToList();
             PlaylistId = playlistId;
             SongId = songId;
@@ -58,11 +50,25 @@ namespace MusicPlayer.Pages
             SongsAddedToPlaylistsList = _context.SongsAddedToPlaylists.ToList();
         }
 
+        public static List<string> GetAudioFiles(string path)
+        {
+            var audioDirectory = Path.Combine(path);
+            if (!Directory.Exists(audioDirectory))
+            {
+                return new List<string>();
+            }
+            return Directory.GetFiles(audioDirectory)
+                                    .Where(file => file.EndsWith(".mp3") || 
+                                                   file.EndsWith(".wav"))
+                                    .Select(file => "/audio/" + Path.GetFileName(file))
+                                    .ToList();
+        }
+
         public async Task<IActionResult> OnPostAsync(int songId, int playlistId)
         {
 
             string audiofileName = AudioFileName;
-            Song audioFileNameObj = new Song();
+            Song audioFileNameObj = new Song(); 
             audioFileNameObj.SongFileName = audiofileName;
 
             if (audioFileNameObj.SongFileName != null)
@@ -91,17 +97,7 @@ namespace MusicPlayer.Pages
 
         public async Task<IActionResult> OnPostUpdateSongClicksAsync([FromBody] SongClickRequest request)
         {
-            Console.WriteLine($"Received songId: {request.SongId}"); // Debug log
-            if (request.SongId <= 0)
-            {
-                return new JsonResult(new { success = false, message = "Invalid song ID (must be greater than 0)" });
-            }
-
             var songEconomy = await _context.SongsEconomies.FirstOrDefaultAsync(s => s.SongId == request.SongId);
-            if (songEconomy == null)
-            {
-                return new JsonResult(new { success = false, message = $"No SongEconomy found for SongId {request.SongId}" });
-            }
 
             songEconomy.SongClicks += 1;
             
