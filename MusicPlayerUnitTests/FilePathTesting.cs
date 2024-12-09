@@ -43,7 +43,7 @@ namespace MusicPlayerUnitTests
         }
 
         [Fact]
-        public void DoNotPlayFilesWithMp3OrWavInNameOnly()//Should not play files that only have mp3 or wav in the name, only if its mp3 or wav audio file.
+        public void DoNotPlayFilesWithMp3OrWavInNameOnly() // Should not play files that only have mp3 or wav in the name, only if its mp3 or wav audio file.
         {
             //Arrange
 
@@ -70,6 +70,7 @@ namespace MusicPlayerUnitTests
             // Assert
             Assert.Empty(audioFilesList);
         }
+        
         [Fact]
         public void VerifyResultHasCorrectPrefix()
         {
