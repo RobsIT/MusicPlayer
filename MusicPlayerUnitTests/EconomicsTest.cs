@@ -13,11 +13,11 @@ using MusicPlayer.Pages;
 namespace MusicPlayerUnitTests
 {
 
-        public class EconomicsTestFörslag
+        public class EconomicsTest
         {
             private readonly ApplicationDbContext _context;
 
-            public EconomicsTestFörslag()
+            public EconomicsTest()
             {
                 // Use in-memory database för att skapa en testDatabase att använda
                 var options = new DbContextOptionsBuilder<ApplicationDbContext>()
@@ -28,7 +28,7 @@ namespace MusicPlayerUnitTests
 
                 _context.Database.EnsureDeleted();
 
-                //lägger till låtar och en låt till songEconomy
+                // Lägger till låtar och en låt till songEconomy
                 _context.AllSongs.AddRange(new List<Song>
             {
                 new Song { Id = 4, SongFileName = "Song1.mp3" },
@@ -64,7 +64,7 @@ namespace MusicPlayerUnitTests
                 var model = new EconomicsModel(_context);
 
                 // Act
-                var result = await model.OnPostAsync(3); //lägger till en ny SongEconomy och kollar att den har standard values
+                var result = await model.OnPostAsync(3); // Lägger till en ny SongEconomy och kollar att den har standard values
 
                 // Assert
                 var songEconomy = _context.SongsEconomies.FirstOrDefault(se => se.SongId == 3);
@@ -82,24 +82,7 @@ namespace MusicPlayerUnitTests
 }
 
 
-//    //--------------------------KOMMENTERA UT VID KÖRNING--------------------------------------
-//    //[Fact]
-//    //public async Task OnPostUpdateSongClicksAsync_Should_Return_False_For_Invalid_SongId()
-//    //{
-//    //    // Arrange
-//    //    var testData = CreateTestData();
-//    //    var pageModel = new SongPageModel(testData);
-//    //    var invalidRequest = new SongClickRequest { SongId = 0 };
 
-//    //    // Act
-//    //    var result = await pageModel.OnPostUpdateSongClicksAsync(invalidRequest) as JsonResult;
-//    //    var response = result?.Value as dynamic;
-
-//    //    // Assert
-//    //    Assert.NotNull(response);
-//    //    Assert.False(response.success);
-//    //    Assert.Equal("Invalid song ID (must be greater than 0)", response.message);
-//    //}
 
 
 
