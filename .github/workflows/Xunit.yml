@@ -13,24 +13,19 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-    # Checkout the repository code
     - name: Checkout code
-      uses: actions/checkout@v3
+      uses: actions/checkout@v4
 
-    # Set up .NET environment
     - name: Setup .NET
-      uses: actions/setup-dotnet@v3
+      uses: actions/setup-dotnet@v4
       with:
-        dotnet-version: 8.0  # Adjust according to your project's .NET version
+        dotnet-version: 8.0
 
-    # Restore dependencies
     - name: Restore dependencies
       run: dotnet restore
 
-    # Build the solution
     - name: Build solution
       run: dotnet build --configuration Release --no-restore
 
-    # Run xUnit tests
     - name: Run xUnit Tests
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test ./MusicPlayerUnitTests/MusicPlayerUnitTests.csproj --no-build --verbosity normal
