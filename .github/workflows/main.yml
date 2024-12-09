@@ -28,4 +28,4 @@ jobs:
       run: dotnet build --no-restore --configuration Release
 
     - name: Run tests                                        #Kör testerna med dotnet test.
-      run: dotnet test --no-build --verbosity normal
+      run: dotnet test ./MusicPlayerUnitTests/MusicPlayerUnitTests.csproj --verbosity normal
