@@ -1,0 +1,31 @@
+name: MusicPlayer CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build-and-test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Check out code                                   #Klonar koden från repositoryt.
+      uses: actions/checkout@v4
+
+    - name: Set up .NET                                      #Installerar den version av .NET SDK du specificerar
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: '8.x' 
+
+    - name: Restore dependencies                             #Kör dotnet restore för att hämta beroenden.
+      run: dotnet restore
+
+    - name: Build the project                                #Bygger projektet med dotnet build.
+      run: dotnet build --no-restore --configuration Release
+
+    - name: Run tests                                        #Kör testerna med dotnet test.
+      run: dotnet test --no-build --verbosity normal
