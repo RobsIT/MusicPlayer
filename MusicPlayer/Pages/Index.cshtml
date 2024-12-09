@@ -3,97 +3,124 @@
 @model IndexModel
 @{
     ViewData["Title"] = "Home page";
-    
-}
+    int playlistIdToSubmitSelection = 0;
 
+}
+<link href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css" rel="stylesheet">
 
 <card class="cardMusicPlayer" >
 
     <div style="display: flex;">
 
-    
+        @* ---LIBRARY AND ADD NEW TRACK--- *@
         <card class="cardLibrary">
-            <h6 style="color: white">Bibliotek</h6>
-       
-            <div class="d-flex justify-content-between">
-                <a asp-route-playlistId="0">Alla låtar</a>
-                <div class="dropdown">
-                    <button type="button" class="btn btn-outline-dark btn-sm"  data-bs-toggle="dropdown">+</button>
-                    <ul class="dropdown-menu" style="padding-left: 10px; background-color: darkgray">
-                        <h6>Lägg till i Bibliotek</h6>
-                        <div>
-                            <form method="post">
-                                <input type="file" name="AudioFileName" />
-                                <button type="submit">Ladda upp låt</button>
-                            </form>
+            <div class="card bg-dark text-white" style="height: 45px;">
+                <div class="card-body" style="padding-top: 12px; ">
+                    <div class="d-flex justify-content-between">
+                        <h6 style="color: white">Bibliotek <i style="color: white" class="bi bi-bank2"></i></h6>
+                        <div class="dropdown">
+                            <a class="bi bi-plus-circle" data-bs-toggle="dropdown"></a>
+                            <ul class="dropdown-menu" style="padding-left: 10px; background-color: darkgray">
+                                <h6>Lägg till låt i Bibliotek</h6>
+                                <div>
+                                    <form method="post">
+                                        <input type="file" name="AudioFileName" />
+                                        <input type="submit" class="btn-dark" value="Hämta">Ladda upp låt</input>
+                                    </form>
+                                </div>
+                            </ul>
                         </div>
-                    </ul>
+                    </div>
                 </div>
             </div>
-            <div class="d-flex justify-content-between">
-                <h6 style="color: white">Playlists</h6>
-                <div class="dropdown">
-
-                    <button class="btn btn-outline-dark btn-sm" data-bs-toggle="dropdown">+</button>
-                    <ul class="dropdown-menu" style="padding-left: 10px; background-color: darkgray">
-                        <h6>Skapa ny playlist</h6>
-                        <div>
-                            <form method="post">
-                                <label asp-for="PlaylistObj.PlaylistName">Ange Playlist namn</label>
-                                <input asp-for="PlaylistObj.PlaylistName" />
-                                <input type="submit" class="btn-dark" value="Skapa" />
-                            </form>
+            
+            <a style="color: white; text-decoration: none; padding-left: 20px; padding-top: 5px;" asp-route-playlistId="0">Alla låtar</a>
+            
+            @* ---PLAYLISTS AND ADD NEW PLAYLIST---*@
+            <div style="padding-top: 5px;">
+                <div class="card bg-dark text-white" style="height: 45px;">
+                    <div class="card-body" style="padding-top: 12px; ">
+                        <div class="d-flex justify-content-between">
+                            <h6 style="color: white">Playlists <i style="color: white" class="bi bi-music-note-list"></i></h6>
+                            <div class="dropdown">
+                                <a class="bi bi-plus-circle" data-bs-toggle="dropdown"></a>
+                                <ul class="dropdown-menu" style="padding-left: 10px; padding-right: 10px; background-color: darkgray">
+                                    <h6>Skapa ny playlist</h6>
+                                    <div>
+                                        <form method="post">
+                                            <label asp-for="PlaylistObj.PlaylistName">Ange Playlist namn</label>
+                                            <input asp-for="PlaylistObj.PlaylistName" />
+                                            <input type="submit" class="btn-dark" value="Skapa" />
+                                        </form>
+                                    </div>
+                                </ul>
+                            </div>
                         </div>
-                    </ul>
+                    </div>
                 </div>
             </div>
-        
+           
+            @*---PLAYLISTS---*@
             @foreach (var playlistItem in Model.PlaylistList)
             {
                 if (playlistItem != null)
                 {
                     int playlistId = playlistItem.Id;
                     <div class="d-flex justify-content-between">
-                        <a asp-route-playlistId="@playlistItem.Id">@playlistItem.PlaylistName</a>
-                        <form method="post">
-                            <a asp-route-playlistId="@playlistItem.Id" asp-route-songId="@Model.SongId" class="btn-sm btn-dark">+</a>
-                            <input type="submit" class="btn-dark" value="submit" />
-                        </form>
+                        <a style="color: white; text-decoration: none; padding-left: 17px;" asp-route-playlistId="@playlistItem.Id">@playlistItem.PlaylistName</a>
                     </div>
-            
                 }
             }
         </card>
    
+       @*---INSIDE PLAYLIST WINDOW---*@
         <card class="cardPlaylistContent">
             @if (Model.PlaylistId > 0)
             {
-                <h6 style="color: white">Playlist</h6>
+                var playlistName = Model.PlaylistList.Where(s => s.Id == Model.PlaylistId).FirstOrDefault();
+                
+                 <div class="card bg-dark text-white" style="height: 45px;">
+                    <div class="card-body" style="padding-top: 12px; ">
+                        <h6 style="color: white">@playlistName.PlaylistName <i style="color: white" class="bi bi-music-note"></i></h6>
+                    </div>
+                 </div>
+                //Loop out specific playlist
                 @foreach (var songInPlaylist in Model.SongsAddedToPlaylistsList)
                 {
                     if (songInPlaylist != null)
                     {
                         var songName = Model.AllSongsList.Where(s => s.Id == songInPlaylist.SongFileId).FirstOrDefault();
-                        var playlistName = Model.PlaylistList.Where(s => s.Id == songInPlaylist.PlaylistId).FirstOrDefault();
 
                         if (Model.PlaylistId == songInPlaylist.PlaylistId)
                         {
                             string audioPath = "/audio/" + songName.SongFileName;
-                            <a href="#" onclick="playAudio('@audioPath', @songInPlaylist.SongFileId)" data-song-id="@songInPlaylist.SongFileId">
-                                @songName.SongFileName
-                            </a>
+                            <div class="d-flex justify-content-between" style="padding-left: 17px;">
+                                <a href="#" style="color: white; text-decoration: none;" onclick="playAudio('@audioPath', @songInPlaylist.SongFileId)" data-song-id="@songInPlaylist.SongFileId">
+                                    @songName.SongFileName
+                                </a>
+                                <i class="bi bi-x-square" style="color: darkred; padding-right: 15px"></i>
+                            </div>
                         }
                     }
                 }
             }
-
             else 
             {
-                <h6 style="color: white">Alla låtar</h6>
+                <div class="card bg-dark text-white" style="height: 45px;">
+                    <div class="card-body" style="padding-top: 10px; ">
+                        <div class="d-flex align-items-center" style="color: white">
+                            <h6>Alla låtar</h6>
+                            <i class="bi bi-globe" style="font-size: 15px; color: whiten; padding-left: 10px; padding-bottom: 10px"></i>
+                            <i class="bi bi-bar-chart-fill ms-auto"></i>
+                        </div>
+                    </div>
+                </div>
+                //Loop out all songs
                 @foreach (var song in Model.AllSongsList)
                 {
                     var songEconomy = Model.SongsEconomiesList.Where(se => se.SongId == song.Id).FirstOrDefault();
-                    int songClicksFromDb = 0; 
+                    int songClicksFromDb = 0;
+                    int playlistId = 0;
                     
                     if(songEconomy != null)
                     {
@@ -103,40 +130,67 @@
                     if (song != null)
                     {
                         string audioPath = "/audio/" + song.SongFileName;
-                        <div class="d-flex justify-content-between">
-                            <a href="#" onclick="playAudio('@audioPath', @song.Id)" data-song-id="@song.Id">@System.IO.Path.GetFileName(song.SongFileName)</a>
-                            <div style="color: gray">@songClicksFromDb</div>
-                            <a asp-route-songId="@song.Id" class="btn-sm btn-dark">+</a>
+                        <div class="d-flex justify-content-between" style="padding-left: 17px;">
+                            <div class="dropdown">
+                                <div>
+                                    <a href="#" style="color: white; text-decoration: none;" onclick="playAudio('@audioPath', @song.Id)"
+                                        data-song-id="@song.Id">@System.IO.Path.GetFileName(song.SongFileName)</a>
+                                    <a class="bi bi-file-earmark-plus" data-bs-toggle="dropdown" ></a>
+                                    <ul class="dropdown-menu" style="background: none;">
+                                        <form method="post">
+                                            <input type="hidden" name="songId" value="@song.Id" />
+                                            <select name="playlistId" onchange="this.form.submit()" class="dark-select">
+                                                <option selected value="@null">Lägg till i</option>
+                                                @foreach (var playlistItem in Model.PlaylistList)
+                                                {
+                                                    <option value="@playlistItem.Id">@playlistItem.PlaylistName</option>
+                                                }
+                                            </select>
+                                        </form>
+                                    </ul>
+                                </div>
+                            </div>
+                            <div style="color: gray; padding-right: 15px">@songClicksFromDb</div>
                         </div>
                     }
-
                 }
             }
-
         </card>
     </div>
     <br />
     <card class="cardControlls" >
 
-        <div id="player"  style="padding-top: 20px" >
-            <audio id="audioPlayer" controls>
+        <div id="player">
+
+            <!-- Kontrollknappar -->
+            <div class="text-center">
+                <button onclick="playPauseAudio()" class="bi bi-play-fill" style="font-size: 60px; color: white;
+                        background: none; border: none;" id="toggleButton"></button>
+                <button onclick="stopAudio()" class="bi bi-stop-fill" style="font-size: 60px; color: white;
+                        background: none; border: none;"></button>
+                <button onclick="playNext()" class="bi bi-skip-end-fill" style="font-size: 60px; color: white;
+                        background: none; border: none;"></button>
+            </div>
+            
+            <!-- Tidslinje -->
+            <input type="range" id="progressBar" value="0" max="100" style="width: 100%; accent-color: slateblue;  background-color: black" />
+
+            <div class="d-flex align-items-center">
+                <!-- Volymkontroll -->
+                <i class="bi bi-volume-off-fill" style="color: white; font-size: 40px; "></i>
+                <label for="volumeControl" style=""></label>
+                <input type="range" id="volumeControl" style="accent-color: slateblue;" min="0" max="0.025" step="0.001" value="0.025" />
+                
+                <!-- Speltid -->
+                <div id="timeDisplay" class="ms-auto" style="color: white; text-align: center; font-size: 18px; margin-top: 10px;">
+                    0:00 / 0:00
+                </div>
+            </div>
+
+            <audio id="audioPlayer" controls hidden>
                 <source id="audioSource" src="" type="audio/mpeg" />
                 Din webbläsare stödjer inte ljuduppspelning.
             </audio>
-
-            <!-- Tidslinje -->
-            <input type="range" id="progressBar" value="0" max="100" style="width: 100%;" />
-
-            <!-- Volymkontroll -->
-            <label for="volumeControl" style="color: white">Volym:</label>
-            <input type="range" id="volumeControl" min="0" max="0.025" step="0.001" value="0.025" />
-
-            <!-- Kontrollknappar -->
-            <div>
-                <button onclick="pauseAudio()">Pausa</button>
-                <button onclick="stopAudio()">Stoppa</button>
-                <button onclick="playNext()">Nästa</button>
-            </div>
         </div>
     </card>
 

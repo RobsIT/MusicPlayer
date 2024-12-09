@@ -44,7 +44,7 @@ body {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     display: flex;
     flex-direction: column;
-    background-color: rgba(0,0,0,90%);
+    background-color: rgba(0,0,0,85%);
     overflow-y: auto;
 }
 .cardPlaylistContent {
@@ -68,3 +68,18 @@ body {
     padding: 20px;
     padding-top: 10px;
 }
+
+.dark-select {
+    background-color: #333; /* Mörk bakgrund */
+    color: #ccc; /* Grå text */
+    border: 1px solid #555; /* Valfri kantfärg */
+    border-radius: 4px; /* Ger mjuka hörn */
+    padding: 5px; /* Lägger till lite utrymme inuti */
+    font-size: 14px; /* Justerar textstorlek */
+}
+
+.dark-select option {
+    background-color: #333; /* Bakgrund för alternativ */
+    color: #ccc; /* Textfärg för alternativ */
+}
+

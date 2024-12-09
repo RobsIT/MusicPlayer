@@ -1,4 +1,10 @@
-﻿const audioPlayer = document.getElementById('audioPlayer');
+﻿
+const toggleButton = document.getElementById('toggleButton');
+const audioPlayer = document.getElementById('audioPlayer');
+const audioSource = document.getElementById("audioSource");
+const progressBar = document.getElementById("progressBar");
+const volumeControl = document.getElementById("volumeControl");
+
 // Begränsa volymen till max 50%
 audioPlayer.volume = 0.025;
 // Lyssna på volymförändringar och begränsa till 50%
@@ -9,9 +15,6 @@ audioPlayer.addEventListener('volumechange', () =>{
     }
 });
 
-const audioSource = document.getElementById("audioSource");
-const progressBar = document.getElementById("progressBar");
-const volumeControl = document.getElementById("volumeControl");
 
 // Lista över alla ljudfiler
 const playlistItems = Array.from(document.querySelectorAll("#playlist a"));
@@ -24,6 +27,9 @@ const playAudio = (filePath = null, songId = null) => {
         console.log('Playing audio:', filePath, 'with songId:', songId); // Debugging
         audioSource.src = filePath;
         audioPlayer.load();
+        toggleButton.classList.remove('bi-play-fill');
+        toggleButton.classList.add('bi-pause-fill');  // Add pause icon
+        
     }
     else if (!audioSource.src)
     {
@@ -32,7 +38,6 @@ const playAudio = (filePath = null, songId = null) => {
     }
 
     audioPlayer.play();
-
     //Sends the songId and runs the OnPostUpdateSongClicksAsync in Index.cshtml.cs
     if (songId)
     {
@@ -45,20 +50,22 @@ const playAudio = (filePath = null, songId = null) => {
     }
 };
 
-// Pausa ljudet
-const pauseButton = document.querySelector("button[onclick='pauseAudio()']");
+// Play/Pause Button
 let isPaused = false;
-pauseButton.addEventListener("click", () => {
+const pauseButton = document.querySelector("button[onclick='playPauseAudio()']");
+toggleButton.addEventListener("click", () => {
     if (isPaused)
     {
         audioPlayer.play();
-        pauseButton.textContent = "Pausa";
+        toggleButton.classList.remove('bi-play-fill'); // Remove play icon
+        toggleButton.classList.add('bi-pause-fill');  // Add pause icon
         isPaused = false;
     }
     else
     {
         audioPlayer.pause();
-        pauseButton.textContent = "Spela";
+        toggleButton.classList.remove('bi-pause-fill'); // Remove pause icon
+        toggleButton.classList.add('bi-play-fill');  // Add play icon
         isPaused = true;
     }
 });
@@ -68,6 +75,8 @@ function stopAudio()
 {
     audioPlayer.pause();
     audioPlayer.currentTime = 0;
+    toggleButton.classList.remove('bi-pause-fill'); // Remove pause icon
+    toggleButton.classList.add('bi-play-fill');  // Add play icon
 }
 
 // Spela nästa låt i spellistan
@@ -88,6 +97,23 @@ function playNext()
 
     playAudio(nextFilePath, nextItem.dataset.songId);
 }
+
+// Formatera tid som mm:ss
+function formatTime(seconds) {
+    const minutes = Math.floor(seconds / 60);
+    const secs = Math.floor(seconds % 60);
+    return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
+}
+
+// Uppdatera speltid
+audioPlayer.addEventListener('timeupdate', () => {
+    const currentTime = audioPlayer.currentTime;
+    const duration = audioPlayer.duration || 0;
+    timeDisplay.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
+
+    // Uppdatera progressBar
+    progressBar.value = (currentTime / duration) * 100 || 0;
+});
 
 // Uppdatera tidslinjen
 audioPlayer.addEventListener("timeupdate", () => {
