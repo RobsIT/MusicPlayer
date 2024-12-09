@@ -28,4 +28,4 @@ jobs:
       run: dotnet build --configuration Release --no-restore
 
     - name: Run xUnit Tests
-      run: dotnet test ./MusicPlayerUnitTests/MusicPlayerUnitTests.csproj --no-build --verbosity normal
+      run: dotnet test ./MusicPlayerUnitTests/MusicPlayerUnitTests.csproj --verbosity normal
