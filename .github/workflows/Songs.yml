@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - audio/**
+  workflow_dispatch:
 
 jobs:
   list-audio-files:
