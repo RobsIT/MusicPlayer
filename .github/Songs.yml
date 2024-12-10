@@ -1,0 +1,25 @@
+name: List Songs
+
+on:
+  push:
+    paths:
+      - audio/**
+
+jobs:
+  list-audio-files:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v3
+
+      - name: List audio files and save to file
+        run: |
+          echo "Låtar i mappen:" > audio_files_list.txt
+          find audio/ -type f -name "*.mp3" -o -name "*.wav" >> audio_files_list.txt
+
+      - name: Upload audio file list
+        uses: actions/upload-artifact@v3
+        with:
+          name: audio-files-list
+          path: audio_files_list.txt
