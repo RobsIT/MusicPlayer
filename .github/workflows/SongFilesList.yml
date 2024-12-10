@@ -18,19 +18,24 @@ jobs:
       - name: Generate file list          # Run the script to generate the file list
         run: |
           mkdir -p output
-          python -c """
-import os
-
-# Specify the directory to list files from
-folder_path = '\MusicPlayer\wwwroot\audio'  
-output_file = 'output/songs_list.txt'
-
-files = os.listdir(folder_path)      # Get a list of files in the folder
-
-with open(output_file, 'w') as f:      # Write the file list to a text file
-    for file in files:
-        f.write(file + '\n')
-"""
+          python -c "
+          import os
+          
+          # Specify the directory to list files from
+          folder_path = 'MusicPlayer/wwwroot/audio'
+          output_file = 'output/songs_list.txt'
+          
+          # Check if the folder exists
+          if not os.path.exists(folder_path):
+              raise FileNotFoundError(f'The directory {folder_path} does not exist.')
+          
+          files = os.listdir(folder_path)  # Get a list of files in the folder
+          
+          # Write the file list to a text file
+          with open(output_file, 'w') as f:
+              for file in files:
+                  f.write(file + '\n')
+          "
     
       - name: Upload artifact            # Upload the generated file list as an artifact
         uses: actions/upload-artifact@v3
