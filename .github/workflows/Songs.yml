@@ -3,7 +3,7 @@ name: List Songs
 on:
   push:
     paths:
-      - Musicplayer/wwwroot/audio/**
+      - MusicPlayer/wwwroot/audio/**
   workflow_dispatch:
 
 jobs:
@@ -17,7 +17,7 @@ jobs:
       - name: List audio files and save to file
         run: |
           echo "Låtar i mappen:" > audio_files_list.txt
-          find Musicplayer/wwwroot/audio/ -type f -name "*.mp3" -o -name "*.wav" >> audio_files_list.txt
+          find MusicPlayer/wwwroot/audio/ -type f -name "*.mp3" -o -name "*.wav" >> audio_files_list.txt
 
       - name: Upload audio file list
         uses: actions/upload-artifact@v3
