@@ -102,7 +102,7 @@ namespace MusicPlayer.Pages
             songEconomy.SongClicks += 1;
             
             await _context.SaveChangesAsync();
-
+            
             return new JsonResult(new { success = true });
         }
     }

@@ -16,7 +16,7 @@ namespace MusicPlayerUnitTests
         public void FilesCount() //Kollar antal filer
         {
             // Arrange
-            int expected = 11;
+            int expected = 12;
 
             // Act
             var audioFilesList = IndexModel.GetAudioFiles("wwwroot/audio");
