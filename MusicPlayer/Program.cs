@@ -1,5 +1,6 @@
 using Microsoft.EntityFrameworkCore;
 using MusicPlayer.Data;
+using MusicPlayer.Service;
 
 namespace MusicPlayer
 {
@@ -15,6 +16,7 @@ namespace MusicPlayer
 
             // Add services to the container.
             builder.Services.AddRazorPages();
+            builder.Services.AddScoped<ISongClicks, SongClicks>();
 
             var app = builder.Build();
 
@@ -30,6 +32,10 @@ namespace MusicPlayer
             app.UseStaticFiles();
 
             app.UseRouting();
+            app.UseEndpoints(endpoints =>
+            {
+                endpoints.MapControllers();
+            });
 
             app.UseAuthorization();
 

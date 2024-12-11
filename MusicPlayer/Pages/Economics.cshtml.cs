@@ -38,8 +38,7 @@ namespace MusicPlayer.Pages
 
             _context.SongsEconomies.Add(songEconomy);
 
-            await _context.SaveChangesAsync();   
-
+            await _context.SaveChangesAsync();
             return RedirectToPage();
         }
     }

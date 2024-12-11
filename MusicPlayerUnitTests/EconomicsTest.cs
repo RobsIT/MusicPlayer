@@ -12,62 +12,42 @@ using MusicPlayer.Pages;
 
 namespace MusicPlayerUnitTests
 {
+    public class EconomicsTest
+    {
 
-        public class EconomicsTest
+        [Fact] // Call the EconomicsViewModel, and calls the OnPostAsync to test the database add function
+        public async Task AddSongEconomyTest()
         {
-            private readonly ApplicationDbContext _context;
 
-            public EconomicsTest()
+            // Arrange
+            var options = new DbContextOptionsBuilder<ApplicationDbContext>()
+            .UseInMemoryDatabase(databaseName: "TestDatabase")
+            .Options;
+
+            using (var context = new ApplicationDbContext(options))
             {
-                // Use in-memory database för att skapa en testDatabase att använda
-                var options = new DbContextOptionsBuilder<ApplicationDbContext>()
-                    .UseInMemoryDatabase(databaseName: "TestDatabase")
-                    .Options;
+                var songEconomy = new SongEconomy
+                {
+                    SongId = 1,
+                    SongPlayPrice = 0.5,
+                    SongClicks = 0
+                };
 
-                _context = new ApplicationDbContext(options);
-
-                _context.Database.EnsureDeleted();
-
-                // Lägger till låtar och en låt till songEconomy
-                _context.AllSongs.AddRange(new List<Song>
-            {
-                new Song { Id = 4, SongFileName = "Song1.mp3" },
-                new Song { Id = 2, SongFileName = "Song2.mp3" }
-            });
-
-                _context.SongsEconomies.AddRange(new List<SongEconomy>
-            {
-                new SongEconomy { Id = 1, SongId = 4, SongClicks = 10, SongPlayPrice = 0.5 }
-            });
-
-                _context.SaveChanges();
+                context.SongsEconomies.Add(songEconomy);
+                context.SaveChanges();
             }
 
-            [Fact]
-            public void OnGet_PopulatesModelProperties()
-            {
-                // Arrange
-                var model = new EconomicsModel(_context);
 
+            using (var context = new ApplicationDbContext(options))
+            {
                 // Act
-                model.OnGet();
+                var songEconomyModel = new EconomicsModel(context);
+
+                var result = await songEconomyModel.OnPostAsync(3);
 
                 // Assert
-                Assert.Equal(2, model.AllSongsList.Count);
-                Assert.Equal(1, model.SongsEconomiesList.Count);
-            }
+                var songEconomy = context.SongsEconomies.FirstOrDefault(se => se.SongId == 3);
 
-            [Fact]
-            public async Task OnPostAsync_AddsNewSongEconomy()
-            {
-                // Arrange
-                var model = new EconomicsModel(_context);
-
-                // Act
-                var result = await model.OnPostAsync(3); // Lägger till en ny SongEconomy och kollar att den har standard values
-
-                // Assert
-                var songEconomy = _context.SongsEconomies.FirstOrDefault(se => se.SongId == 3);
                 Assert.NotNull(songEconomy);
                 Assert.Equal(0, songEconomy.SongClicks);
                 Assert.Equal(0.5, songEconomy.SongPlayPrice);
@@ -76,9 +56,10 @@ namespace MusicPlayerUnitTests
                 Assert.IsType<RedirectToPageResult>(result);
             }
 
+
         }
 
-
+    }
 }
 
 

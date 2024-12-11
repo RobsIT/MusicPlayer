@@ -8,6 +8,7 @@ using Microsoft.EntityFrameworkCore;
 using System;
 using MusicPlayer.Models;
 using MusicPlayer.Data;
+using MusicPlayer.Service;
 
 namespace MusicPlayer.Pages
 {
@@ -15,13 +16,11 @@ namespace MusicPlayer.Pages
     public class IndexModel : PageModel
     {
         private readonly ApplicationDbContext _context;
-        public class SongClickRequest
-        {
-            public int SongId { get; set; }
-        }
-        public IndexModel(ApplicationDbContext context)
+        private readonly ISongClicks _songClicks;
+        public IndexModel(ApplicationDbContext context, ISongClicks songClicks)
         {
             _context = context;
+            _songClicks = songClicks;
         }
 
         [BindProperty]
@@ -66,6 +65,7 @@ namespace MusicPlayer.Pages
 
         public async Task<IActionResult> OnPostAsync(int songId, int playlistId)
         {
+            await _songClicks.IncrementSongClicksAsync(songId);
 
             string audiofileName = AudioFileName;
             Song audioFileNameObj = new Song(); 
@@ -93,17 +93,6 @@ namespace MusicPlayer.Pages
             await _context.SaveChangesAsync();   // Sparar ändringarna i databasen
 
             return RedirectToPage();
-        }
-
-        public async Task<IActionResult> OnPostUpdateSongClicksAsync([FromBody] SongClickRequest request)
-        {
-            var songEconomy = await _context.SongsEconomies.FirstOrDefaultAsync(s => s.SongId == request.SongId);
-
-            songEconomy.SongClicks += 1;
-            
-            await _context.SaveChangesAsync();
-            
-            return new JsonResult(new { success = true });
         }
     }
 }

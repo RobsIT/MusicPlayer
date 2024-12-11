@@ -39,13 +39,11 @@ const playAudio = (filePath = null, songId = null) => {
 
     audioPlayer.play();
     //Sends the songId and runs the OnPostUpdateSongClicksAsync in Index.cshtml.cs
-    if (songId)
-    {
-        fetch('/Index?handler=UpdateSongClicks',
-        { 
+    if (songId) {
+        fetch('/api/SongClicksApi/increment', {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ songId: songId })
+            body: JSON.stringify(songId)
         })
     }
 };
