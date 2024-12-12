@@ -161,7 +161,7 @@
 
         <div id="player">
 
-            <!-- Kontrollknappar -->
+         @*  Controllerbuttons *@
             <div class="text-center">
                 <button onclick="playPauseAudio()" class="bi bi-play-fill" style="font-size: 60px; color: white;
                         background: none; border: none;" id="toggleButton"></button>
@@ -171,16 +171,16 @@
                         background: none; border: none;"></button>
             </div>
             
-            <!-- Tidslinje -->
+            @* Timeline *@
             <input type="range" id="progressBar" value="0" max="100" style="width: 100%; accent-color: slateblue;  background-color: black" />
 
             <div class="d-flex align-items-center">
-                <!-- Volymkontroll -->
+                @* VolumeControl *@
                 <i class="bi bi-volume-off-fill" style="color: white; font-size: 40px; "></i>
                 <label for="volumeControl" style=""></label>
                 <input type="range" id="volumeControl" style="accent-color: slateblue;" min="0" max="0.025" step="0.001" value="0.025" />
                 
-                <!-- Speltid -->
+               @*  Playtime *@
                 <div id="timeDisplay" class="ms-auto" style="color: white; text-align: center; font-size: 18px; margin-top: 10px;">
                     0:00 / 0:00
                 </div>

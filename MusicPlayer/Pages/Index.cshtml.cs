@@ -73,12 +73,12 @@ namespace MusicPlayer.Pages
 
             if (audioFileNameObj.SongFileName != null)
             {
-                _context.AllSongs.Add(audioFileNameObj); // Lägger till i DbSet
+                _context.AllSongs.Add(audioFileNameObj); // Adds to DbSet
             }
 
             if (PlaylistObj.PlaylistName != null)
             {
-                _context.Playlists.Add(PlaylistObj); // Lägger till i DbSet
+                _context.Playlists.Add(PlaylistObj); // Adds to DbSet
             }
 
             if ((songId != null || playlistId != null) || (songId != 0 || playlistId != 0))
@@ -87,10 +87,10 @@ namespace MusicPlayer.Pages
                 addedToPlaylist.SongFileId = songId;
                 addedToPlaylist.PlaylistId = playlistId;
 
-                _context.SongsAddedToPlaylists.Add(addedToPlaylist); // Lägger till i DbSet
+                _context.SongsAddedToPlaylists.Add(addedToPlaylist); // Adds to DbSet
             }
 
-            await _context.SaveChangesAsync();   // Sparar ändringarna i databasen
+            await _context.SaveChangesAsync();   // Save changes to Db
 
             return RedirectToPage();
         }

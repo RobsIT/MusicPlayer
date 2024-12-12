@@ -5,22 +5,22 @@ const audioSource = document.getElementById("audioSource");
 const progressBar = document.getElementById("progressBar");
 const volumeControl = document.getElementById("volumeControl");
 
-// Begränsa volymen till max 50%
+// Limit volume
 audioPlayer.volume = 0.025;
-// Lyssna på volymförändringar och begränsa till 50%
+// Listen for Volume changes and limit
 audioPlayer.addEventListener('volumechange', () =>{
     if (audioPlayer.volume > 0.025)
     {
-        audioPlayer.volume = 0.025; // Återställ om den går över gränsen
+        audioPlayer.volume = 0.025; // Reset volume if it exceedes the limit
     }
 });
 
 
-// Lista över alla ljudfiler
+// List of audio files
 const playlistItems = Array.from(document.querySelectorAll("#playlist a"));
 let currentIndex = 0;
 
-// Spela upp en ljudfil
+// Play audio file
 const playAudio = (filePath = null, songId = null) => {
     if (filePath)
     {
@@ -38,7 +38,7 @@ const playAudio = (filePath = null, songId = null) => {
     }
 
     audioPlayer.play();
-    //Sends the songId and runs the OnPostUpdateSongClicksAsync in Index.cshtml.cs
+    // Sends the songId and runs the OnPostUpdateSongClicksAsync in Index.cshtml.cs
     if (songId) {
         fetch('/api/SongClicksApi/increment', {
             method: 'POST',
@@ -68,7 +68,7 @@ toggleButton.addEventListener("click", () => {
     }
 });
 
-// Stoppa ljudet och återställ tidslinjen
+// Stop audio and go back to start
 function stopAudio()
 {
     audioPlayer.pause();
@@ -77,7 +77,7 @@ function stopAudio()
     toggleButton.classList.add('bi-play-fill');  // Add play icon
 }
 
-// Spela nästa låt i spellistan
+// Play next song in playlist
 function playNext()
 {
     const playlistItems = Array.from(document.querySelectorAll(".cardPlaylistContent a[href^='#']"));
@@ -96,38 +96,38 @@ function playNext()
     playAudio(nextFilePath, nextItem.dataset.songId);
 }
 
-// Formatera tid som mm:ss
+// Format time as mm:ss
 function formatTime(seconds) {
     const minutes = Math.floor(seconds / 60);
     const secs = Math.floor(seconds % 60);
     return `${minutes}:${secs < 10 ? '0' : ''}${secs}`;
 }
 
-// Uppdatera speltid
+// Update play time
 audioPlayer.addEventListener('timeupdate', () => {
     const currentTime = audioPlayer.currentTime;
     const duration = audioPlayer.duration || 0;
     timeDisplay.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
 
-    // Uppdatera progressBar
+    // Update progressBar
     progressBar.value = (currentTime / duration) * 100 || 0;
 });
 
-// Uppdatera tidslinjen
+// Update timeline
 audioPlayer.addEventListener("timeupdate", () => {
     progressBar.value = (audioPlayer.currentTime / audioPlayer.duration) * 100;
 });
 
-// Hoppa i låten när tidslinjen ändras
+// Jump around in track while playning
 progressBar.addEventListener("input", () => {
     audioPlayer.currentTime = (progressBar.value / 100) * audioPlayer.duration;
 });
 
-// Justera volymen
+// Adjust volume
 volumeControl.addEventListener("input", () => {
     audioPlayer.volume = volumeControl.value;
 });
 
-// När låten är klar, spela nästa
+// When song is finnished, play next song
 audioPlayer.addEventListener("ended", playNext);
 
